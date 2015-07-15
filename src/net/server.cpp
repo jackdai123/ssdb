@@ -18,7 +18,7 @@ static DEF_PROC(auth);
 
 #define TICK_INTERVAL          100 // ms
 #define STATUS_REPORT_TICKS    (300 * 1000/TICK_INTERVAL) // second
-static const int READER_THREADS = 10;
+static const int READER_THREADS = 2;
 static const int WRITER_THREADS = 1;
 
 volatile bool quit = false;

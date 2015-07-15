@@ -121,7 +121,7 @@ echo "JEMALLOC_PATH=$JEMALLOC_PATH" >> build_config.mk
 echo "SNAPPY_PATH=$SNAPPY_PATH" >> build_config.mk
 
 echo "CFLAGS=" >> build_config.mk
-echo "CFLAGS = -DNDEBUG -D__STDC_FORMAT_MACROS -Wall -O2 -Wno-sign-compare" >> build_config.mk
+echo "CFLAGS = -DNDEBUG -D__STDC_FORMAT_MACROS -D__linux__ -Wall -O2 -Wno-sign-compare" >> build_config.mk
 echo "CFLAGS += ${PLATFORM_CFLAGS}" >> build_config.mk
 echo "CFLAGS += -I \"$LEVELDB_PATH/include\"" >> build_config.mk
 
