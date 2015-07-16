@@ -3,6 +3,7 @@
 
 #include "SSDB_client.h"
 #include "net/link.h"
+#include "util/config.h"
 
 namespace ssdb{
 
@@ -12,10 +13,14 @@ private:
 	
 	Link *link;
 	std::vector<std::string> resp_;
+private:
+	std::vector<Link*> vLinks;
+	std::map< Link*, std::vector<Link*> > mLinks;
 public:
 	ClientImpl();
 	~ClientImpl();
 
+	size_t hash_func( const std::string & key );
 	virtual const std::vector<std::string>* request(const std::vector<std::string> &req);
 	virtual const std::vector<std::string>* request(const std::string &cmd);
 	virtual const std::vector<std::string>* request(const std::string &cmd, const std::string &s2);
@@ -39,10 +44,15 @@ public:
 		uint64_t limit, std::vector<std::string> *ret);
 	virtual Status scan(const std::string &key_start, const std::string &key_end,
 		uint64_t limit, std::vector<std::string> *ret);
+	virtual Status scan_id(const std::string &key_start, const std::string &key_end,
+		uint64_t limit, const std::string &id, std::vector<std::string> *ret);
+	virtual Status scan_del(const std::string &key_start, const std::string &key_end,
+		uint64_t limit);
 	virtual Status rscan(const std::string &key_start, const std::string &key_end,
 		uint64_t limit, std::vector<std::string> *ret);
 	virtual Status multi_get(const std::vector<std::string> &keys, std::vector<std::string> *ret);
 	virtual Status multi_set(const std::map<std::string, std::string> &kvs);
+	virtual Status multi_set_scale(const std::map<std::string, std::string> &kvs);
 	virtual Status multi_del(const std::vector<std::string> &keys);
 	
 	virtual Status hget(const std::string &name, const std::string &key, std::string *val);

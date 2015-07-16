@@ -220,6 +220,48 @@ int proc_scan(NetworkServer *net, Link *link, const Request &req, Response *resp
 	return 0;
 }
 
+int proc_scan_id(NetworkServer *net, Link *link, const Request &req, Response *resp){
+	SSDBServer *serv = (SSDBServer *)net->data;
+	CHECK_NUM_PARAMS(5);
+
+	std::string::size_type pos;
+	uint64_t limit = req[3].Uint64();
+	KIterator *it = serv->ssdb->scan(req[1], req[2], limit);
+	resp->push_back("ok");
+	while(it->next()){
+		pos = it->key.find( ':' );//key contain timestamp and id
+		if ( it->key.substr( pos+1 ) == req[4].String() ) {
+			resp->push_back(it->key);
+			resp->push_back(it->val);
+		}
+	}
+	delete it;
+	return 0;
+}
+
+int proc_scan_del(NetworkServer *net, Link *link, const Request &req, Response *resp){
+	SSDBServer *serv = (SSDBServer *)net->data;
+	CHECK_NUM_PARAMS(4);
+
+	int ret = 0;
+	int64_t sum = 0;
+	uint64_t limit = req[3].Uint64();
+	KIterator *it = serv->ssdb->scan(req[1], req[2], limit);
+	while(it->next()){
+		Locking l(&serv->expiration->mutex);
+		ret = serv->ssdb->del(it->key);
+		if(ret == -1){
+			break;
+		}else{
+			serv->expiration->del_ttl(it->key);
+			sum++;
+		}
+	}
+	resp->reply_int(ret, sum);
+	delete it;
+	return 0;
+}
+
 int proc_rscan(NetworkServer *net, Link *link, const Request &req, Response *resp){
 	SSDBServer *serv = (SSDBServer *)net->data;
 	CHECK_NUM_PARAMS(4);

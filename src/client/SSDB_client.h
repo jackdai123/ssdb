@@ -66,6 +66,7 @@ class Client{
 public:
 	static Client* connect(const char *ip, int port);
 	static Client* connect(const std::string &ip, int port);
+	static Client* connect(const char * conffile);
 	Client(){};
 	virtual ~Client(){};
 
@@ -110,6 +111,13 @@ public:
 	 */
 	virtual Status scan(const std::string &key_start, const std::string &key_end,
 	 	uint64_t limit, std::vector<std::string> *ret) = 0;
+
+	virtual Status scan_id(const std::string &key_start, const std::string &key_end,
+	 	uint64_t limit, const std::string &id, std::vector<std::string> *ret) = 0;
+
+	virtual Status scan_del(const std::string &key_start, const std::string &key_end,
+	 	uint64_t limit) = 0;
+
 	/**
 	 * Return key-value pairs.
 	 * The two elements at ret[n] and ret[n+1] form a key-value pair, n=0,2,4,...
@@ -122,6 +130,7 @@ public:
 	 */
 	virtual Status multi_get(const std::vector<std::string> &keys, std::vector<std::string> *vals) = 0;
 	virtual Status multi_set(const std::map<std::string, std::string> &kvs) = 0;
+	virtual Status multi_set_scale(const std::map<std::string, std::string> &kvs) = 0;
 	virtual Status multi_del(const std::vector<std::string> &keys) = 0;
 	/// @}
 

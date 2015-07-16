@@ -1,5 +1,6 @@
 #include "SSDB_impl.h"
 #include "util/strings.h"
+#include "util/file.h"
 #include <signal.h>
 
 namespace ssdb{
@@ -52,6 +53,11 @@ ClientImpl::~ClientImpl(){
 	if(link){
 		delete link;
 	}
+	for ( size_t i = 0; i < vLinks.size(); i++ ) {
+		if ( vLinks[i] ) {
+			delete vLinks[i];
+		}
+	}
 }
 
 Client* Client::connect(const char *ip, int port){
@@ -71,6 +77,83 @@ Client* Client::connect(const std::string &ip, int port){
 		return NULL;
 	}
 	return client;
+}
+
+Client* Client::connect(const char * conffile){
+	static bool inited = false;
+	if(!inited){
+		inited = true;
+		signal(SIGPIPE, SIG_IGN);
+	}
+	ClientImpl *client = new ClientImpl();
+	Config * conf = NULL;
+	char tmpbuf[64] = {0};
+	char host[64] = {0};
+	std::vector<Link*> vTmp;
+	int nodesum = 0;
+
+	static const char * default_conffile = "/usr/local/ssdb/ssdb_cli.conf";
+	if ( conffile == NULL && conffile[0] == '\0' ) {
+		conffile = default_conffile;
+	}
+	if ( !is_file(conffile) ) {
+		fprintf( stderr, "'%s' is not a file or not exists!\n", conffile );
+		goto CONNECTFAIL;
+	}
+	conf = Config::load( conffile );
+	if ( conf == NULL ) {
+		fprintf( stderr, "error loading conf file: '%s'\n", conffile );
+		goto CONNECTFAIL;
+	}
+
+	nodesum = conf->get_num( "nodesum" );
+	for ( int i = 0; i < nodesum; i++ ) {
+		snprintf( tmpbuf, sizeof(tmpbuf), "node%d.hostsum", i );
+		int hostsum = conf->get_num( tmpbuf );
+		vTmp.clear();
+		for ( int j = 0; j < hostsum; j++ ) {
+			snprintf( tmpbuf, sizeof(tmpbuf), "node%d.host%d", i, j );
+			strncpy( host, conf->get_str( tmpbuf ), sizeof(host)-1 );
+			char * p = strchr( host, ':' );
+			if ( p == NULL ) {
+				fprintf( stderr, "host %s in '%s' format err\n", host, conffile );
+				goto CONNECTFAIL;
+			}
+			*p = '\0';
+			Link * link = Link::connect( host, atoi(p+1) );
+			if ( link == NULL ) {
+				fprintf( stderr, "host %s in '%s' connect err", host, conffile );
+				goto CONNECTFAIL;
+			}
+			vTmp.push_back( link );
+			client->vLinks.push_back( link );
+		}
+		for ( size_t j = 0; j < vTmp.size(); j++ ) {
+			for ( size_t k = 0; k < vTmp.size(); k++ ) {
+				if ( j != k ) {
+					client->mLinks[ vTmp[j] ].push_back( vTmp[k] );
+				}
+			}
+		}
+	}
+
+	if ( conf ) {
+		delete conf;
+	}
+	return client;
+
+CONNECTFAIL:
+	if ( client ) {
+		delete client;
+	}
+	if ( conf ) {
+		delete conf;
+	}
+	return NULL;
+}
+
+size_t ClientImpl::hash_func( const std::string & key ) {
+	return 0;
 }
 
 const std::vector<std::string>* ClientImpl::request(const std::vector<std::string> &req){
@@ -242,6 +325,25 @@ Status ClientImpl::scan(const std::string &key_start, const std::string &key_end
 	return _read_list(resp, ret);
 }
 
+Status ClientImpl::scan_id(const std::string &key_start, const std::string &key_end,
+	uint64_t limit, const std::string &id, std::vector<std::string> *ret)
+{
+	std::string s_limit = str(limit);
+	const std::vector<std::string> *resp;
+	resp = this->request("scan_id", key_start, key_end, s_limit, id);
+	return _read_list(resp, ret);
+}
+
+Status ClientImpl::scan_del(const std::string &key_start, const std::string &key_end,
+	uint64_t limit)
+{
+	std::string s_limit = str(limit);
+	const std::vector<std::string> *resp;
+	resp = this->request("scan_del", key_start, key_end, s_limit);
+	Status s(resp);
+	return s;
+}
+
 Status ClientImpl::rscan(const std::string &key_start, const std::string &key_end,
 	uint64_t limit, std::vector<std::string> *ret)
 {
@@ -258,6 +360,20 @@ Status ClientImpl::multi_get(const std::vector<std::string> &keys, std::vector<s
 }
 
 Status ClientImpl::multi_set(const std::map<std::string, std::string> &kvs){
+	const std::vector<std::string> *resp;
+	std::vector<std::string> list;
+	for(std::map<std::string, std::string>::const_iterator it = kvs.begin();
+		it != kvs.end(); ++it)
+	{
+		list.push_back(it->first);
+		list.push_back(it->second);
+	}
+	resp = this->request("multi_set", list);
+	Status s(resp);
+	return s;
+}
+
+Status ClientImpl::multi_set_scale(const std::map<std::string, std::string> &kvs){
 	const std::vector<std::string> *resp;
 	std::vector<std::string> list;
 	for(std::map<std::string, std::string>::const_iterator it = kvs.begin();

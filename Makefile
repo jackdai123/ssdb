@@ -32,7 +32,7 @@ install:
 	mkdir -p ${PREFIX}/deps
 	mkdir -p ${PREFIX}/var
 	mkdir -p ${PREFIX}/var_slave
-	cp -f ssdb-server ssdb.conf ssdb_slave.conf ${PREFIX}
+	cp -f ssdb-server ssdb.conf ssdb_cli.conf ssdb_slave.conf ${PREFIX}
 	cp -rf api ${PREFIX}
 	cp -rf \
 		tools/ssdb-bench \
@@ -55,6 +55,7 @@ clean:
 	cd src/util; ${MAKE} clean
 	cd src/ssdb; ${MAKE} clean
 	cd src/net; ${MAKE} clean
+	cd src/client; ${MAKE} clean
 	cd src; ${MAKE} clean
 	cd tools; ${MAKE} clean
 

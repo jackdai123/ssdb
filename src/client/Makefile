@@ -9,6 +9,8 @@ lib: SSDB_client.h SSDB_impl.h SSDB_impl.cpp
 	${CXX} -I../ ${CFLAGS} -c SSDB_impl.cpp
 	ar -cru libssdb-client.a\
 		SSDB_impl.o\
+		../util/log.o\
+		../util/config.o\
 		../util/bytes.o\
 		../net/link.o
 	cp SSDB_client.h libssdb-client.a ../../api/cpp
