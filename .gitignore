@@ -25,6 +25,7 @@ _pack
 build_config.mk
 log.txt
 log_slave.txt
+src/client/batch
 src/client/demo
 src/client/hello-ssdb
 api/cpp/SSDB_client.h
