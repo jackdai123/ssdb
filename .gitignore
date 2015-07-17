@@ -18,6 +18,7 @@ dev_ssdb.conf*
 ssdb-server
 test_level_reader
 test_level_writer
+tools/batch2
 tools/ssdb-dump
 tools/ssdb-bench
 tools/ssdb-repair
