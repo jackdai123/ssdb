@@ -16,6 +16,8 @@ dev_ssdb.conf*
 *_cpy_*
 *.dSYM*
 ssdb-server
+test_level_reader
+test_level_writer
 tools/ssdb-dump
 tools/ssdb-bench
 tools/ssdb-repair
@@ -25,6 +27,7 @@ _pack
 build_config.mk
 log.txt
 log_slave.txt
+src/client/test
 src/client/batch
 src/client/demo
 src/client/hello-ssdb

@@ -29,7 +29,7 @@ void * func( void * arg ) {
 	while( true ) {
 		pthread_mutex_lock( &lock );
 		current_process = process;
-		process += 5000;
+		process += 50000;
 		current_time = iTime++;
 		pthread_mutex_unlock( &lock );
 
@@ -38,8 +38,8 @@ void * func( void * arg ) {
 		}
 
 		std::map<std::string, std::string> kvs;
-		for ( int i = 0; i < 5000; i++ ) {
-			snprintf( buf, sizeof(buf), "%u%s%04d", current_time, key2.c_str(), i );
+		for ( int i = 0; i < 50000; i++ ) {
+			snprintf( buf, sizeof(buf), "%u:%s%05d", current_time, key2.c_str(), i );
 			kvs.insert( make_pair(buf, value) );
 		}
 

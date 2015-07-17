@@ -45,9 +45,8 @@ public:
 	virtual Status scan(const std::string &key_start, const std::string &key_end,
 		uint64_t limit, std::vector<std::string> *ret);
 	virtual Status scan_id(const std::string &key_start, const std::string &key_end,
-		uint64_t limit, const std::string &id, std::vector<std::string> *ret);
-	virtual Status scan_del(const std::string &key_start, const std::string &key_end,
-		uint64_t limit);
+		const std::string &id, std::vector<std::string> *ret);
+	virtual Status scan_del(const std::string &key_start, const std::string &key_end);
 	virtual Status rscan(const std::string &key_start, const std::string &key_end,
 		uint64_t limit, std::vector<std::string> *ret);
 	virtual Status multi_get(const std::vector<std::string> &keys, std::vector<std::string> *ret);

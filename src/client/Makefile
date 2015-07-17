@@ -2,6 +2,7 @@ include ../../build_config.mk
 
 all: lib
 	${CXX} -o demo demo.cpp libssdb-client.a
+	${CXX} -o test test.cpp libssdb-client.a
 	${CXX} -o batch batch.cpp libssdb-client.a -lpthread
 	${CXX} -o hello-ssdb hello-ssdb.cpp libssdb-client.a
 
@@ -16,5 +17,5 @@ lib: SSDB_client.h SSDB_impl.h SSDB_impl.cpp
 	cp SSDB_client.h libssdb-client.a ../../api/cpp
 
 clean:
-	rm -f demo batch hello-ssdb *.a *.o
+	rm -f demo test batch hello-ssdb *.a *.o
 

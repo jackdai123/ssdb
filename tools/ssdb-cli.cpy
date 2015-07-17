@@ -379,6 +379,7 @@ while(true){
 			case 'zremrangebyscore':
 			case 'zavg':
 			case 'multi_del':
+            case 'scan_del':
 			case 'multi_hdel':
 			case 'multi_zdel':
 			case 'hclear':
@@ -406,6 +407,7 @@ while(true){
 				sys.stderr.write(sprintf('(%.3f sec)\n', time_consume));
 				break;
 			case 'scan':
+            case 'scan_id':
 			case 'rscan':
 			case 'hgetall':
 			case 'hscan':

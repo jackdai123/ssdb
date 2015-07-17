@@ -151,7 +151,7 @@ void SSDBServer::reg_procs(NetworkServer *net){
 	REG_PROC(decr, "wt");
 	REG_PROC(scan, "rt");
 	REG_PROC(scan_id, "rt");
-	REG_PROC(scan_del, "rt");
+	REG_PROC(scan_del, "wt");
 	REG_PROC(rscan, "rt");
 	REG_PROC(keys, "rt");
 	REG_PROC(rkeys, "rt");

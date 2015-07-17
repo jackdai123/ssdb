@@ -88,7 +88,7 @@ class SSDB(object):
 		# {{{ switch: cmd
 		_continue_1 = False
 		while True:
-			if False or ((cmd) == 'ping') or ((cmd) == 'qset') or ((cmd) == 'set') or ((cmd) == 'zset') or ((cmd) == 'hset') or ((cmd) == 'qpush') or ((cmd) == 'qpush_front') or ((cmd) == 'qpush_back') or ((cmd) == 'del') or ((cmd) == 'zdel') or ((cmd) == 'hdel') or ((cmd) == 'multi_set') or ((cmd) == 'multi_del') or ((cmd) == 'multi_hset') or ((cmd) == 'multi_hdel') or ((cmd) == 'multi_zset') or ((cmd) == 'multi_zdel'):
+			if False or ((cmd) == 'ping') or ((cmd) == 'qset') or ((cmd) == 'set') or ((cmd) == 'zset') or ((cmd) == 'hset') or ((cmd) == 'qpush') or ((cmd) == 'qpush_front') or ((cmd) == 'qpush_back') or ((cmd) == 'del') or ((cmd) == 'zdel') or ((cmd) == 'hdel') or ((cmd) == 'multi_set') or ((cmd) == 'multi_del') or ((cmd) == 'multi_hset') or ((cmd) == 'multi_hdel') or ((cmd) == 'multi_zset') or ((cmd) == 'multi_zdel') or ((cmd) == 'scan_del'):
 				pass
 
 				if resp[0]=='ok':
@@ -180,7 +180,7 @@ class SSDB(object):
 				pass
 				return SSDB_Response(resp[0], resp[1 : ])
 				break
-			if False or ((cmd) == 'scan') or ((cmd) == 'rscan') or ((cmd) == 'hgetall') or ((cmd) == 'hscan') or ((cmd) == 'hrscan'):
+			if False or ((cmd) == 'scan') or ((cmd) == 'scan_id') or ((cmd) == 'rscan') or ((cmd) == 'hgetall') or ((cmd) == 'hscan') or ((cmd) == 'hrscan'):
 				pass
 
 				if resp[0]=='ok':

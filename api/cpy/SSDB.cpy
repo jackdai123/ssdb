@@ -92,6 +92,7 @@ class SSDB{
 			case 'multi_hdel':
 			case 'multi_zset':
 			case 'multi_zdel':
+            case 'scan_del':
 				if(resp[0] == 'ok'){
 					if(len(resp) > 1){
 						return new SSDB_Response(resp[0], int(resp[1]));
@@ -208,6 +209,7 @@ class SSDB{
 				return new SSDB_Response(resp[0], resp[1 .. ]);
 				break;
 			case 'scan':
+            case 'scan_id':
 			case 'rscan':
 			case 'hgetall':
 			case 'hscan':

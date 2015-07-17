@@ -113,10 +113,9 @@ public:
 	 	uint64_t limit, std::vector<std::string> *ret) = 0;
 
 	virtual Status scan_id(const std::string &key_start, const std::string &key_end,
-	 	uint64_t limit, const std::string &id, std::vector<std::string> *ret) = 0;
+	 	const std::string &id, std::vector<std::string> *ret) = 0;
 
-	virtual Status scan_del(const std::string &key_start, const std::string &key_end,
-	 	uint64_t limit) = 0;
+	virtual Status scan_del(const std::string &key_start, const std::string &key_end) = 0;
 
 	/**
 	 * Return key-value pairs.

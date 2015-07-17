@@ -7,8 +7,10 @@ LIBS = ./ssdb/libssdb.a ./util/libutil.a ./net/libnet.a
 EXES = ../ssdb-server
 
 
-all: ${OBJS} ssdb-server.o
+all: ${OBJS} ssdb-server.o test_level_writer.o test_level_reader.o
 	${CXX} -o ../ssdb-server ssdb-server.o ${OBJS} ${LIBS} ${CLIBS} client/SSDB_impl.o
+	${CXX} -o ../test_level_writer test_level_writer.o ${CLIBS}
+	${CXX} -o ../test_level_reader test_level_reader.o ${CLIBS}
 
 cluster_migrate.o: cluster_migrate.h cluster_migrate.cpp
 	${CXX} ${CFLAGS} -I./client -c cluster_migrate.cpp
@@ -21,6 +23,10 @@ cluster_store.o: cluster_store.h cluster_store.cpp
 
 ssdb-server.o: ssdb-server.cpp
 	${CXX} ${CFLAGS} -c ssdb-server.cpp
+test_level_writer.o: test_level_writer.cpp
+	${CXX} ${CFLAGS} -c test_level_writer.cpp
+test_level_reader.o: test_level_reader.cpp
+	${CXX} ${CFLAGS} -c test_level_reader.cpp
 slave.o: slave.h slave.cpp
 	${CXX} ${CFLAGS} -c slave.cpp
 backend_dump.o: backend_dump.h backend_dump.cpp

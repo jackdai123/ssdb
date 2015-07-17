@@ -326,20 +326,17 @@ Status ClientImpl::scan(const std::string &key_start, const std::string &key_end
 }
 
 Status ClientImpl::scan_id(const std::string &key_start, const std::string &key_end,
-	uint64_t limit, const std::string &id, std::vector<std::string> *ret)
+	const std::string &id, std::vector<std::string> *ret)
 {
-	std::string s_limit = str(limit);
 	const std::vector<std::string> *resp;
-	resp = this->request("scan_id", key_start, key_end, s_limit, id);
+	resp = this->request("scan_id", key_start, key_end, id);
 	return _read_list(resp, ret);
 }
 
-Status ClientImpl::scan_del(const std::string &key_start, const std::string &key_end,
-	uint64_t limit)
+Status ClientImpl::scan_del(const std::string &key_start, const std::string &key_end)
 {
-	std::string s_limit = str(limit);
 	const std::vector<std::string> *resp;
-	resp = this->request("scan_del", key_start, key_end, s_limit);
+	resp = this->request("scan_del", key_start, key_end);
 	Status s(resp);
 	return s;
 }
