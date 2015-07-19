@@ -224,18 +224,19 @@ int proc_scan_id(NetworkServer *net, Link *link, const Request &req, Response *r
 	SSDBServer *serv = (SSDBServer *)net->data;
 	CHECK_NUM_PARAMS(4);
 
-	std::string::size_type pos;
-	uint64_t limit = UINT64_MAX;
-	KIterator *it = serv->ssdb->scan(req[1], req[2], limit);
+	uint64_t begin_time = req[1].Uint64();
+	uint64_t end_time = req[2].Uint64();
+	char key[64] = {0};
 	resp->push_back("ok");
-	while(it->next()){
-		pos = it->key.find( ':' );//key contain timestamp and id
-		if ( it->key.substr( pos+1 ) == req[3].String() ) {
-			resp->push_back(it->key);
-			resp->push_back(it->val);
+	for ( uint64_t t = begin_time; t <= end_time; t++ ) {
+		std::string val;
+		snprintf( key, sizeof(key), "%lu:%s", t, req[3].data() );
+		int ret = serv->ssdb->get(key, &val);
+		if(ret == 1){
+			resp->push_back(key);
+			resp->push_back(val);
 		}
 	}
-	delete it;
 	return 0;
 }
 

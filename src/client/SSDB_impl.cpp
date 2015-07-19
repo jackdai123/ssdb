@@ -336,7 +336,9 @@ Status ClientImpl::scan_id(const std::string &key_start, const std::string &key_
 Status ClientImpl::scan_del(const std::string &key_start, const std::string &key_end)
 {
 	const std::vector<std::string> *resp;
-	resp = this->request("scan_del", key_start, key_end);
+	char buf[64] = {0};
+	snprintf( buf, sizeof(buf), "%ll", atoll(key_end.c_str()) + 1 );
+	resp = this->request("scan_del", key_start, buf);
 	Status s(resp);
 	return s;
 }

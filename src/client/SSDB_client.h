@@ -112,9 +112,13 @@ public:
 	virtual Status scan(const std::string &key_start, const std::string &key_end,
 	 	uint64_t limit, std::vector<std::string> *ret) = 0;
 
+	//e.g. scan_id( "1437268662", "1437268862", "host198", ret )
+	//list key-value pairs with keys in range [1437268662:host198, 1437268862:host198]
 	virtual Status scan_id(const std::string &key_start, const std::string &key_end,
 	 	const std::string &id, std::vector<std::string> *ret) = 0;
 
+	//e.g. scan_del( "1437268662", "1437268862" )
+	//remove key-value pairs with keys in range [1437268662:*, 1437268862:*]
 	virtual Status scan_del(const std::string &key_start, const std::string &key_end) = 0;
 
 	/**
