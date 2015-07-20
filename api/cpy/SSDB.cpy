@@ -209,7 +209,6 @@ class SSDB{
 				return new SSDB_Response(resp[0], resp[1 .. ]);
 				break;
 			case 'scan':
-            case 'scan_id':
 			case 'rscan':
 			case 'hgetall':
 			case 'hscan':

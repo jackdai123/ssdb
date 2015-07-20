@@ -180,7 +180,7 @@ class SSDB(object):
 				pass
 				return SSDB_Response(resp[0], resp[1 : ])
 				break
-			if False or ((cmd) == 'scan') or ((cmd) == 'scan_id') or ((cmd) == 'rscan') or ((cmd) == 'hgetall') or ((cmd) == 'hscan') or ((cmd) == 'hrscan'):
+			if False or ((cmd) == 'scan') or ((cmd) == 'rscan') or ((cmd) == 'hgetall') or ((cmd) == 'hscan') or ((cmd) == 'hrscan'):
 				pass
 
 				if resp[0]=='ok':

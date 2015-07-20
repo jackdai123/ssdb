@@ -26,7 +26,6 @@ DEF_PROC(del);
 DEF_PROC(incr);
 DEF_PROC(decr);
 DEF_PROC(scan);
-DEF_PROC(scan_id);
 DEF_PROC(scan_del);
 DEF_PROC(rscan);
 DEF_PROC(keys);
@@ -150,7 +149,6 @@ void SSDBServer::reg_procs(NetworkServer *net){
 	REG_PROC(incr, "wt");
 	REG_PROC(decr, "wt");
 	REG_PROC(scan, "rt");
-	REG_PROC(scan_id, "rt");
 	REG_PROC(scan_del, "wt");
 	REG_PROC(rscan, "rt");
 	REG_PROC(keys, "rt");

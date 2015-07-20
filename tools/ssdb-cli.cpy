@@ -407,7 +407,6 @@ while(true){
 				sys.stderr.write(sprintf('(%.3f sec)\n', time_consume));
 				break;
 			case 'scan':
-            case 'scan_id':
 			case 'rscan':
 			case 'hgetall':
 			case 'hscan':

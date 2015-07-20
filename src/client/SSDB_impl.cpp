@@ -325,14 +325,6 @@ Status ClientImpl::scan(const std::string &key_start, const std::string &key_end
 	return _read_list(resp, ret);
 }
 
-Status ClientImpl::scan_id(const std::string &key_start, const std::string &key_end,
-	const std::string &id, std::vector<std::string> *ret)
-{
-	const std::vector<std::string> *resp;
-	resp = this->request("scan_id", key_start, key_end, id);
-	return _read_list(resp, ret);
-}
-
 Status ClientImpl::scan_del(const std::string &key_start, const std::string &key_end)
 {
 	const std::vector<std::string> *resp;
