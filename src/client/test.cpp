@@ -11,7 +11,6 @@ int main(int argc, char **argv){
 	int port = (argc >= 3)? atoi(argv[2]) : 8888;
 	const char * key_start = argv[3];
 	const char * key_end = argv[4];
-	const char * id = argv[5];
 
 	ssdb::Client *client = ssdb::Client::connect(ip, port);
 	if(client == NULL){
@@ -20,8 +19,8 @@ int main(int argc, char **argv){
 	}
 	
 	std::vector<std::string> ret;
-	client->scan_id( key_start, key_end, id, &ret);
-	printf( "scan_id ret %u\n", ret.size() );
+	ssdb::Status s = client->scan_del( key_start, key_end );
+	printf( "scan_del ret %s\n", s.code().c_str() );
 
 	delete client;
 	return 0;
