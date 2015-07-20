@@ -74,6 +74,12 @@ void bench( const char * ip, int port, int num, const char * begin_time, const c
 			}
 		}
 	}
+
+	for ( int i = 0; i < num; i++ ) {
+		(*free_links)[i]->close();
+	}
+	delete free_links;
+	delete fdes;
 }
 
 int main(int argc, char **argv){

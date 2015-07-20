@@ -13,12 +13,12 @@ const char * ip;
 int port;
 std::string key2="host";
 std::string value="153.28";
-unsigned int iTime = 1436950557;
+time_t iTime = 1436950557;
 
 void * func( void * arg ) {
 	long long current_process = 0;
 	char buf[1024];
-	unsigned int current_time = 0;
+	time_t current_time = 0;
 
 	ssdb::Client *client = ssdb::Client::connect(ip, port);
 	if(client == NULL){
@@ -37,9 +37,13 @@ void * func( void * arg ) {
 			break;
 		}
 
+		struct tm tm_result;
+		localtime_r( &current_time, &tm_result );
 		std::map<std::string, std::string> kvs;
 		for ( int i = 0; i < 50000; i++ ) {
-			snprintf( buf, sizeof(buf), "%u:%s%05d", current_time, key2.c_str(), i );
+			snprintf( buf, sizeof(buf), "%04d:%02d:%02d:%02d:%s%05d:%02d:%02d", tm_result.tm_year+1900, tm_result.tm_mon+1, tm_result.tm_mday,
+					tm_result.tm_hour, key2.c_str(), i, tm_result.tm_min, tm_result.tm_sec );
+			if ( i == 49999 ) printf( "%s\n", buf );
 			kvs.insert( make_pair(buf, value) );
 		}
 

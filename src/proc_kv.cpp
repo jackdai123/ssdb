@@ -230,7 +230,7 @@ int proc_scan_id(NetworkServer *net, Link *link, const Request &req, Response *r
 	resp->push_back("ok");
 	for ( uint64_t t = begin_time; t <= end_time; t++ ) {
 		std::string val;
-		snprintf( key, sizeof(key), "%lu:%s", t, req[3].data() );
+		snprintf( key, sizeof(key), "%lu:%s", t, req[3].String().c_str() );
 		int ret = serv->ssdb->get(key, &val);
 		if(ret == 1){
 			resp->push_back(key);
