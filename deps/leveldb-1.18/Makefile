@@ -14,6 +14,8 @@ OPT ?= -O2 -DNDEBUG
 # OPT ?= -O2 -g2 -DNDEBUG
 #-----------------------------------------------
 
+include ../../build_config.mk
+
 # detect what platform we're building on
 $(shell CC="$(CC)" CXX="$(CXX)" TARGET_OS="$(TARGET_OS)" \
     ./build_detect_platform build_config.mk ./)
