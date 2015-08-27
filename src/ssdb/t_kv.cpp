@@ -8,6 +8,7 @@ found in the LICENSE file.
 int SSDBImpl::multi_set(const std::vector<Bytes> &kvs, int offset, char log_type){
 	Transaction trans(binlogs);
 
+	std::string kv_buf;
 	std::vector<Bytes>::const_iterator it;
 	it = kvs.begin() + offset;
 	for(; it != kvs.end(); it += 2){
@@ -20,8 +21,10 @@ int SSDBImpl::multi_set(const std::vector<Bytes> &kvs, int offset, char log_type
 		const Bytes &val = *(it + 1);
 		std::string buf = encode_kv_key(key);
 		binlogs->Put(buf, slice(val));
-		binlogs->add_log(log_type, BinlogCommand::KSET, buf);
+		kv_buf += key.String() + " " + val.String() + " ";
 	}
+	kv_buf.erase(kv_buf.end()-1);
+	binlogs->add_log(log_type, BinlogCommand::KMULTISET, kv_buf);
 	leveldb::Status s = binlogs->commit();
 	if(!s.ok()){
 		log_error("multi_set error: %s", s.ToString().c_str());

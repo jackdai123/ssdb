@@ -372,6 +372,19 @@ int Slave::proc_sync(const Binlog &log, const std::vector<Bytes> &req){
 				}
 			}
 			break;
+		case BinlogCommand::KMULTISET:
+			{
+				std::vector<Bytes> kvs;
+				std::vector<std::string> vecStr;
+				str_split(log.key().String(), " ", vecStr);
+				for(std::vector<std::string>::iterator it=vecStr.begin(); it!=vecStr.end(); ++it){
+					kvs.push_back(Bytes(*it));
+				}
+				if(ssdb->multi_set(kvs, 0, log_type) == -1){
+					return -1;
+				}
+			}
+			break;
 		case BinlogCommand::KDEL:
 			{
 				std::string key;

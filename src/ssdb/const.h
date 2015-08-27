@@ -50,6 +50,8 @@ public:
 	
 	static const char BEGIN  = 7;
 	static const char END    = 8;
+
+	static const char KMULTISET = 9;
 };
 
 #endif

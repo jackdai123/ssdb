@@ -110,6 +110,9 @@ std::string Binlog::dumps() const{
 		case BinlogCommand::END:
 			str.append("end ");
 			break;
+		case BinlogCommand::KMULTISET:
+			str.append("multi_set ");
+			break;
 		case BinlogCommand::QPUSH_BACK:
 			str.append("qpush_back ");
 			break;
@@ -126,7 +129,15 @@ std::string Binlog::dumps() const{
 			break;
 	}
 	Bytes b = this->key();
-	str.append(hexmem(b.data(), b.size()));
+	if ( b.size() > 100 ) {
+		std::string s = b.String();
+		int sum = (std::count(s.begin(), s.end(), ' ')+1)/2;
+		char buf[32] = {0};
+		snprintf(buf, sizeof(buf), "[%d kvs]", sum);
+		str.append(buf);
+	} else {
+		str.append(hexmem(b.data(), b.size()));
+	}
 	return str;
 }
 

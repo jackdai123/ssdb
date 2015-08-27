@@ -15,7 +15,7 @@ found in the LICENSE file.
 #include <inttypes.h>
 #include <string>
 #include <algorithm>
-
+#include <vector>
 
 inline static
 int is_empty_str(const char *str){
@@ -381,6 +381,23 @@ std::string str_slice(const std::string &str, int start, int end){
 		return "";
 	}
 	return str.substr(start, size);
+}
+
+static inline
+void str_split(const std::string& s, const std::string& delim, std::vector<std::string>& ret)
+{
+	size_t last = 0;
+	size_t index=s.find_first_of(delim,last);
+	while (index!=std::string::npos)
+	{
+		ret.push_back(s.substr(last,index-last));
+		last=index+1;
+		index=s.find_first_of(delim,last);
+	}
+	if (index-last>0)
+	{
+		ret.push_back(s.substr(last,index-last));
+	}
 }
 
 static inline

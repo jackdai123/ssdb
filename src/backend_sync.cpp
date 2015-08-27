@@ -410,6 +410,7 @@ int BackendSync::Client::sync(BinlogQueue *logs){
 		case BinlogCommand::ZDEL:
 		case BinlogCommand::QPOP_BACK:
 		case BinlogCommand::QPOP_FRONT:
+		case BinlogCommand::KMULTISET:
 			log_trace("fd: %d, %s", link->fd(), log.dumps().c_str());
 			link->send(log.repr());
 			break;
