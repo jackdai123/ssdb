@@ -1,6 +1,6 @@
 #!/bin/sh
 BASE_DIR=`pwd`
-JEMALLOC_PATH="$BASE_DIR/deps/jemalloc-3.3.1"
+JEMALLOC_PATH="$BASE_DIR/deps/jemalloc-3.6.0"
 LEVELDB_PATH="$BASE_DIR/deps/leveldb-1.18"
 SNAPPY_PATH="$BASE_DIR/deps/snappy-1.1.0"
 PLATFORM=""
