@@ -183,7 +183,7 @@ else
       #include <atomic>
       int main() {}
 EOF
-    if [ "$?" = 0 ]; then
+    if [ "$?" != 0 ]; then
         COMMON_FLAGS="$COMMON_FLAGS -DLEVELDB_PLATFORM_POSIX -DLEVELDB_ATOMIC_PRESENT"
         PLATFORM_CXXFLAGS="-std=c++0x"
     else

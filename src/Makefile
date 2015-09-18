@@ -4,7 +4,7 @@ OBJS = proc_kv.o proc_hash.o proc_zset.o proc_queue.o \
 	backend_dump.o backend_sync.o slave.o \
 	serv.o proc_cluster.o cluster.o cluster_store.o cluster_migrate.o
 LIBS = ./ssdb/libssdb.a ./util/libutil.a ./net/libnet.a
-EXES = ../ssdb-server
+EXES = ../ssdb-server ../test_level_writer ../test_level_reader
 
 
 all: ${OBJS} ssdb-server.o test_level_writer.o test_level_reader.o

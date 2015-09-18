@@ -3,6 +3,8 @@ BASE_DIR=`pwd`
 JEMALLOC_PATH="$BASE_DIR/deps/jemalloc-3.3.1"
 LEVELDB_PATH="$BASE_DIR/deps/leveldb-1.18"
 SNAPPY_PATH="$BASE_DIR/deps/snappy-1.1.0"
+PLATFORM=""
+SEP=""
 
 if test -z "$TARGET_OS"; then
 	TARGET_OS=`uname -s`
@@ -10,11 +12,18 @@ fi
 if test -z "$MAKE"; then
 	MAKE=make
 fi
+
+CONFIGURE="./configure"
+if [[ $PLATFORM != "" ]]; then
+	SEP="-"
+	CONFIGURE="./configure --host=$PLATFORM"
+fi
+
 if test -z "$CC"; then
-	CC=gcc
+	CC=${PLATFORM}${SEP}gcc
 fi
 if test -z "$CXX"; then
-	CXX=g++
+	CXX=${PLATFORM}${SEP}g++
 fi
 
 case "$TARGET_OS" in
@@ -62,7 +71,7 @@ cd $SNAPPY_PATH
 if [ ! -f Makefile ]; then
 	echo ""
 	echo "##### building snappy... #####"
-	./configure $SNAPPY_HOST
+	$CONFIGURE
 	# FUCK! snappy compilation doesn't work on some linux!
 	find . | xargs touch
 	make
@@ -82,7 +91,7 @@ case "$TARGET_OS" in
 		if [ ! -f Makefile ]; then
 			echo ""
 			echo "##### building jemalloc... #####"
-			./configure
+			$CONFIGURE
 			make
 			echo "##### building jemalloc finished #####"
 			echo ""
