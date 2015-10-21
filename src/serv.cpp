@@ -6,6 +6,7 @@ found in the LICENSE file.
 #include "version.h"
 #include "util/log.h"
 #include "util/strings.h"
+#include "util/domain2ip.h"
 #include "serv.h"
 #include "net/proc.h"
 #include "net/server.h"
@@ -291,6 +292,14 @@ SSDBServer::SSDBServer(SSDB *ssdb, SSDB *meta, const Config &conf, NetworkServer
 				if(ip == "" || port <= 0 || port > 65535){
 					continue;
 				}
+
+				//support domain
+				std::string tmp_ip;
+				if (domain2ip(ip, tmp_ip) != 0){
+					continue;
+				}
+				ip = tmp_ip;
+
 				bool is_mirror = false;
 				std::string type = c->get_str("type");
 				if(type == "mirror"){
