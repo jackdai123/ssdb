@@ -69,6 +69,7 @@ public:
 	virtual int get(const Bytes &key, std::string *val);
 	virtual int getset(const Bytes &key, std::string *val, const Bytes &newval, char log_type=BinlogType::SYNC);
 	// return (start, end]
+	virtual int scan_del(const Bytes &start, const Bytes &end, char log_type=BinlogType::SYNC);
 	virtual KIterator* scan(const Bytes &start, const Bytes &end, uint64_t limit);
 	virtual KIterator* rscan(const Bytes &start, const Bytes &end, uint64_t limit);
 

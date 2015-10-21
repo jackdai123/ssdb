@@ -3,6 +3,7 @@ Copyright (c) 2012-2014 The SSDB Authors. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 */
+#include "../include.h"
 #include "t_kv.h"
 
 int SSDBImpl::multi_set(const std::vector<Bytes> &kvs, int offset, char log_type){
@@ -171,6 +172,28 @@ int SSDBImpl::get(const Bytes &key, std::string *val){
 		return -1;
 	}
 	return 1;
+}
+
+int SSDBImpl::scan_del(const Bytes &start, const Bytes &end, char log_type){
+	Transaction trans(binlogs);
+
+	int sum = 0;
+	uint64_t limit = UINT64_MAX;
+	KIterator * it = scan(start, end, limit);
+	while(it->next()){
+		std::string buf = encode_kv_key(it->key);
+		binlogs->Delete(buf);
+		binlogs->add_log(log_type, BinlogCommand::KDEL, buf);
+		sum++;
+	}
+	delete it;
+	log_debug("scan_del start commit");
+	leveldb::Status s = binlogs->commit();
+	if(!s.ok()){
+		log_error("scan_del error: %s", s.ToString().c_str());
+		return -1;
+	}
+	return sum;
 }
 
 KIterator* SSDBImpl::scan(const Bytes &start, const Bytes &end, uint64_t limit){

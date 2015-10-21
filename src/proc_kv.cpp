@@ -224,22 +224,13 @@ int proc_scan_del(NetworkServer *net, Link *link, const Request &req, Response *
 	SSDBServer *serv = (SSDBServer *)net->data;
 	CHECK_NUM_PARAMS(3);
 
-	int ret = 0;
-	int64_t sum = 0;
-	uint64_t limit = UINT64_MAX;
-	KIterator *it = serv->ssdb->scan(req[1], req[2], limit);
-	while(it->next()){
-		Locking l(&serv->expiration->mutex);
-		ret = serv->ssdb->del(it->key);
-		if(ret == -1){
-			break;
-		}else{
-			serv->expiration->del_ttl(it->key);
-			sum++;
-		}
+	Locking l(&serv->expiration->mutex);
+	int ret = serv->ssdb->scan_del(req[1], req[2]);
+	if(ret == -1){
+		resp->push_back("error");
+	}else{
+		resp->reply_int(0, ret);
 	}
-	resp->reply_int(ret, sum);
-	delete it;
 	return 0;
 }
 
