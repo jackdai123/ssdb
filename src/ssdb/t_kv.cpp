@@ -22,7 +22,7 @@ int SSDBImpl::multi_set(const std::vector<Bytes> &kvs, int offset, char log_type
 		const Bytes &val = *(it + 1);
 		std::string buf = encode_kv_key(key);
 		binlogs->Put(buf, slice(val));
-		kv_buf += key.String() + " " + val.String() + " ";
+		kv_buf += key.String() + " \"" + val.String() + "\" ";
 	}
 	kv_buf.erase(kv_buf.end()-1);
 	binlogs->add_log(log_type, BinlogCommand::KMULTISET, kv_buf);
