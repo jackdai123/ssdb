@@ -376,7 +376,7 @@ int Slave::proc_sync(const Binlog &log, const std::vector<Bytes> &req){
 			{
 				std::vector<Bytes> kvs;
 				std::vector<std::string> vecStr;
-				str_split(log.key().String(), " ", vecStr);
+				multi_set_str_split(log.key().String(), vecStr);
 				for(std::vector<std::string>::iterator it=vecStr.begin(); it!=vecStr.end(); ++it){
 					kvs.push_back(Bytes(*it));
 				}
