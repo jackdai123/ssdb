@@ -401,6 +401,36 @@ void str_split(const std::string& s, const std::string& delim, std::vector<std::
 }
 
 static inline
+void multi_set_str_split(const std::string& s, std::vector<std::string>& ret)
+{
+	std::string tmp;
+	size_t j;
+	for( size_t i = 0; i < s.size(); ++i ) {
+		if ( s[i] == '\"' ) {
+			j = s.find_first_of( '\"', i+1 );
+			if ( j == std::string::npos ) {
+				ret.clear();
+				return;
+			}
+			ret.push_back( s.substr( i+1, j-i-1 ) );
+			i = j;
+		}
+		else if ( isspace(s[i]) ) {
+			if ( !tmp.empty() ) {
+				ret.push_back(tmp);
+				tmp.clear();
+			}
+		}
+		else {
+			tmp += s[i];
+		}
+	}
+	if ( !tmp.empty() ) {
+		ret.push_back(tmp);
+	}
+}
+
+static inline
 int bitcount(const char *p, int size){
 	int n = 0;
 	for(int i=0; i<size; i++){
