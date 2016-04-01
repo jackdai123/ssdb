@@ -127,6 +127,9 @@ std::string Binlog::dumps() const{
 		case BinlogCommand::QSET:
 			str.append("qset ");
 			break;
+		case BinlogCommand::KSCANDEL:
+			str.append("scan_del ");
+			break;
 	}
 	Bytes b = this->key();
 	if ( b.size() > 100 ) {

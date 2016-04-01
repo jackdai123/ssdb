@@ -376,7 +376,7 @@ int Slave::proc_sync(const Binlog &log, const std::vector<Bytes> &req){
 			{
 				std::vector<Bytes> kvs;
 				std::vector<std::string> vecStr;
-				multi_set_str_split(log.key().String(), vecStr);
+				str_split2(log.key().String(), vecStr);
 				for(std::vector<std::string>::iterator it=vecStr.begin(); it!=vecStr.end(); ++it){
 					kvs.push_back(Bytes(*it));
 				}
@@ -504,6 +504,19 @@ int Slave::proc_sync(const Binlog &log, const std::vector<Bytes> &req){
 					ret = ssdb->qpop_front(name, &tmp, log_type);
 				}
 				if(ret == -1){
+					return -1;
+				}
+			}
+			break;
+		case BinlogCommand::KSCANDEL:
+			{
+				std::vector<std::string> vecStr;
+				str_split2(log.key().String(), vecStr);
+				if (vecStr.size() != 2) {
+					log_error("scan_del args sum %d error", vecStr.size());
+					return -1;
+				}
+				if (ssdb->scan_del(vecStr[0], vecStr[1], log_type) == -1) {
 					return -1;
 				}
 			}

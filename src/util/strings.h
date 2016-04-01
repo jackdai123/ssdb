@@ -401,11 +401,10 @@ void str_split(const std::string& s, const std::string& delim, std::vector<std::
 }
 
 static inline
-void multi_set_str_split(const std::string& s, std::vector<std::string>& ret)
+void str_split2(const std::string& s, std::vector<std::string>& ret)
 {
-	std::string tmp;
-	size_t j;
-	for( size_t i = 0; i < s.size(); ++i ) {
+	size_t i, j;
+	for( i = 0; i < s.size(); ++i ) {
 		if ( s[i] == '\"' ) {
 			j = s.find_first_of( '\"', i+1 );
 			if ( j == std::string::npos ) {
@@ -415,18 +414,6 @@ void multi_set_str_split(const std::string& s, std::vector<std::string>& ret)
 			ret.push_back( s.substr( i+1, j-i-1 ) );
 			i = j;
 		}
-		else if ( isspace(s[i]) ) {
-			if ( !tmp.empty() ) {
-				ret.push_back(tmp);
-				tmp.clear();
-			}
-		}
-		else {
-			tmp += s[i];
-		}
-	}
-	if ( !tmp.empty() ) {
-		ret.push_back(tmp);
 	}
 }
 

@@ -6,6 +6,10 @@ found in the LICENSE file.
 #include "../include.h"
 #include "t_kv.h"
 
+#ifndef SCAN_DEL_STEP
+#define SCAN_DEL_STEP 500000
+#endif
+
 int SSDBImpl::multi_set(const std::vector<Bytes> &kvs, int offset, char log_type){
 	Transaction trans(binlogs);
 
@@ -22,7 +26,7 @@ int SSDBImpl::multi_set(const std::vector<Bytes> &kvs, int offset, char log_type
 		const Bytes &val = *(it + 1);
 		std::string buf = encode_kv_key(key);
 		binlogs->Put(buf, slice(val));
-		kv_buf += key.String() + " \"" + val.String() + "\" ";
+		kv_buf += "\"" + key.String() + "\" \"" + val.String() + "\" ";
 	}
 	kv_buf.erase(kv_buf.end()-1);
 	binlogs->add_log(log_type, BinlogCommand::KMULTISET, kv_buf);
@@ -175,24 +179,41 @@ int SSDBImpl::get(const Bytes &key, std::string *val){
 }
 
 int SSDBImpl::scan_del(const Bytes &start, const Bytes &end, char log_type){
-	Transaction trans(binlogs);
-
 	int sum = 0;
-	uint64_t limit = UINT64_MAX;
-	KIterator * it = scan(start, end, limit);
-	while(it->next()){
-		std::string buf = encode_kv_key(it->key);
-		binlogs->Delete(buf);
-		binlogs->add_log(log_type, BinlogCommand::KDEL, buf);
-		sum++;
+	int total = -1;
+	uint64_t limit = SCAN_DEL_STEP;
+	std::string kstart = start.String();
+	std::string buf;
+	leveldb::Status s;
+
+	while (kstart < end && total != sum) {
+		total = sum;
+		KIterator * it = scan(kstart, end, limit);
+		Transaction trans(binlogs);
+		binlogs->begin();
+		while(it->next()){
+			kstart = it->key;
+			buf = encode_kv_key(it->key);
+			binlogs->Delete(buf);
+			sum++;
+		}
+		delete it;
+		s = binlogs->commit();
+		if(!s.ok()){
+			log_error("scan_del %d error: %s", sum, s.ToString().c_str());
+			return -1;
+		}
 	}
-	delete it;
-	log_debug("scan_del start commit");
-	leveldb::Status s = binlogs->commit();
+
+	Transaction trans(binlogs);
+	binlogs->begin();
+	binlogs->add_log(log_type, BinlogCommand::KSCANDEL, "\"" + start.String() + "\" \"" + end.String() + "\"");
+	s = binlogs->commit();
 	if(!s.ok()){
-		log_error("scan_del error: %s", s.ToString().c_str());
+		log_error("scan_del add_log error: %s", s.ToString().c_str());
 		return -1;
 	}
+
 	return sum;
 }
 
